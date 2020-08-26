@@ -1,6 +1,6 @@
 import UIKit
 var schedule = "WED:WK5"
-let weeks = ["WK1", "WK2", "WK3", "WK4", "WK5", "WK6"]
+let weeks = ["WK1", "WK2", "WK3", "WK4", "WK5"]
 let normalWeeksOrder = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"]
 var weekOrder = [[String]]()
 var weekNameOrder = [String]()
@@ -41,13 +41,14 @@ func makingOrder() {
     weekNameOrder = tempWeekNameOrder
     weekOrder = tempWeekOrder
 }
-print(weekOrder)
-print(weekNameOrder)
+print(weekOrder, "WEEKORDER")
+print(weekNameOrder, "WEEKNAMEORDER")
 
 var curWeek = weeks.index(of: currentWeek)!
 var nextDay = 0
-if weekOrder[curWeek].count != 1 {
-    nextDay = weekNameOrder.index(of: currentDay)! + 1
+if  weekOrder.count != 1{
+    nextDay = normalWeeksOrder.index(of: currentDay)! + 1
+    print(nextDay)
     if weekOrder.count == nextDay {
         nextDay = 0
     }
@@ -57,6 +58,7 @@ if weekOrder[curWeek].count != 1 {
     //valueToAdded = -3
 }
 while true {
+    //print(weekOrder[nextDay],nextDay, currentWeek)
     if weekOrder[nextDay].contains(currentWeek) {
         print(currentWeek)
         print(weekOrder[nextDay])
@@ -69,7 +71,7 @@ while true {
             nextDay = nextDay + 1
         } else {
             nextDay = 0
-            if curWeek != 4 {
+            if curWeek != weeks.count - 1  {
                 curWeek = curWeek + 1
                 currentWeek = weeks[curWeek]
             } else {
@@ -80,5 +82,5 @@ while true {
     }
 }
 print(valueToAdded)
-let m = Calendar.current.date(byAdding: .day, value: valueToAdded, to: date)!
-print(m)
+let nextTripDay = Calendar.current.date(byAdding: .day, value: valueToAdded, to: date)!
+print(nextTripDay)
