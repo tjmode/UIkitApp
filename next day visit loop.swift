@@ -1,7 +1,7 @@
 import Foundation
 var schedule = "WED:WK5"
 let weeks = ["WK1", "WK2", "WK3", "WK4", "WK5", "WK6"]
-let normalWeeksOrder = ["SUN","MON", "TUE", "WED", "THUR", "FRI", "SAT"]
+let normalWeeksOrder = ["SUN","MON", "TUE", "WED", "THU", "FRI", "SAT"]
 var weekOrder = [[String]]()
 var weekNameOrder = [String]()
 var valueToAdded = 0
