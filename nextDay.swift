@@ -1,5 +1,5 @@
 import Foundation
-var schedule = "TUE:WK1"
+var schedule = "SUN:WK5"
 let weeks = ["WK1", "WK2", "WK3", "WK4", "WK5", "WK6"]
 let normalWeeksOrder = ["SUN","MON", "TUE", "WED", "THU", "FRI", "SAT"]
 var weekOrder = [[String]]()
@@ -95,6 +95,7 @@ while true {
         curWeek = 0
         nextDay += 1
         currentDate = 1
+        valueToAdded += 1
         print(nextDay)
     }
     else {
@@ -114,12 +115,12 @@ while true {
             curWeek += 1
             nextDay = 0
         }
-        else {
-            valueToAdded += 1
-            currentDate += 1
-            curWeek = 0 
-            nextDay = 0
-        }
+        // else {
+        //     valueToAdded += 1
+        //     currentDate += 1
+        //     curWeek = 0 
+        //     nextDay = 0
+        // }
     }
 }
 print(valueToAdded)
