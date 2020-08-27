@@ -1,5 +1,5 @@
 import Foundation
-var schedule = "SUN:WK1"
+var schedule = "MON:WK1"
 let weeks = ["WK1", "WK2", "WK3", "WK4", "WK5", "WK6"]
 let normalWeeksOrder = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"]
 var weekOrder = [[String]]()
@@ -12,21 +12,23 @@ let today = DateFormatter()
 today.dateFormat = "EEE"
 var calendar = NSCalendar.current
 var weekOfMonth = calendar.component(.weekOfMonth, from: date)
-var currentWeek = "WK5"
+var currentWeek = "WK\(weekOfMonth)"
 var currentDay = today.string(from: date).uppercased()
 var schedulePerWeek = schedule.components(separatedBy: ";")
-for perWeek in schedulePerWeek {
-    var perWeekSchedule = perWeek.components(separatedBy: ",")
-    let a = perWeekSchedule[0].components(separatedBy: ":")
-    if a.count != 0 {
-        perWeekSchedule[0] = a[1]
-    } else {
-        perWeekSchedule[0] = ""
+func daySplitter() {
+    for perWeek in schedulePerWeek {
+        var perWeekSchedule = perWeek.components(separatedBy: ",")
+        let a = perWeekSchedule[0].components(separatedBy: ":")
+        if a.count != 0 {
+            perWeekSchedule[0] = a[1]
+        } else {
+            perWeekSchedule[0] = ""
+        }
+        weekOrder.append(perWeekSchedule)
+        weekNameOrder.append(a[0])
     }
-    weekOrder.append(perWeekSchedule)
-    weekNameOrder.append(a[0])
 }
-
+daySplitter()
 func makingOrder() {
     var tempWeekOrder = [[String]]()
     var tempWeekNameOrder = [String]()
@@ -64,10 +66,8 @@ func weekAndDayFinder () {
         if weekOrder[nextDay].contains(currentWeek) {
             dayToVist = weekNameOrder[nextDay]
             weekToVist = currentWeek
-            valueToAdded = valueToAdded + 1
             break
         } else {
-            valueToAdded = valueToAdded + 1
             if weekNameOrder.count - 1 != nextDay {
                 nextDay = nextDay + 1
             } else {
