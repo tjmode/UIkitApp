@@ -1,10 +1,12 @@
 import Foundation
-var schedule = "MON:WK1"
+var schedule = "FRI:WK5"
+var nextTripDate = ""
 let weeks = ["WK1", "WK2", "WK3", "WK4", "WK5", "WK6"]
 let normalWeeksOrder = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"]
 var weekOrder = [[String]]()
 var weekNameOrder = [String]()
-var valueToAdded = 0
+var daysLimit = 300
+var daysLimitCounter = 0
 var dayToVist = ""
 var weekToVist = ""
 let date = Date()
@@ -12,23 +14,31 @@ let today = DateFormatter()
 today.dateFormat = "EEE"
 var calendar = NSCalendar.current
 var weekOfMonth = calendar.component(.weekOfMonth, from: date)
-var currentWeek = "WK\(weekOfMonth)"
+var currentWeek = "WK1"
 var currentDay = today.string(from: date).uppercased()
-var schedulePerWeek = schedule.components(separatedBy: ";")
+// currentDay = "MON"
 func daySplitter() {
+    var semiColonRemover = Array(schedule)
+    if semiColonRemover[semiColonRemover.count - 1] == ";" {
+         semiColonRemover.removeLast()
+    }
+    schedule = String(semiColonRemover)
+    let schedulePerWeek = schedule.components(separatedBy: ";")
     for perWeek in schedulePerWeek {
         var perWeekSchedule = perWeek.components(separatedBy: ",")
-        let a = perWeekSchedule[0].components(separatedBy: ":")
-        if a.count != 0 {
-            perWeekSchedule[0] = a[1]
+        let temp = perWeekSchedule[0].components(separatedBy: ":")
+        if temp.count != 0 {
+            perWeekSchedule[0] = temp[1]
         } else {
             perWeekSchedule[0] = ""
         }
         weekOrder.append(perWeekSchedule)
-        weekNameOrder.append(a[0])
+        weekNameOrder.append(temp[0])
     }
+    weekNameOrder = weekNameOrder.map{$0}
+    weekOrder = weekOrder.map{$0.map{$0.uppercased()}}
 }
-daySplitter()
+
 func makingOrder() {
     var tempWeekOrder = [[String]]()
     var tempWeekNameOrder = [String]()
@@ -40,30 +50,20 @@ func makingOrder() {
             tempWeekOrder.append([""])
             tempWeekNameOrder.append("")
         }
-        
     }
     weekNameOrder = tempWeekNameOrder
     weekOrder = tempWeekOrder
 }
-// print(weekOrder, "WEEKORDER")
-// print(weekNameOrder, "WEEKNAMEORDER")
-makingOrder()
+
+
 var curWeek = weeks.index(of: currentWeek)!
 var nextDay = 0
-//if  weekOrder.count != 1{
-    
-    //print(nextDay)
-    // if weekOrder.count == nextDay {
-    //     nextDay = 0
-    // }
-//} else {
-    //nextDay = 0
-//}
 nextDay = normalWeeksOrder.index(of: currentDay)! + 1
 currentWeek = weeks[curWeek]
 func weekAndDayFinder () {
     while true {
-        if weekOrder[nextDay].contains(currentWeek) {
+        
+        if weekOrder[nextDay].contains(currentWeek) || daysLimitCounter == daysLimit{
             dayToVist = weekNameOrder[nextDay]
             weekToVist = currentWeek
             break
@@ -87,20 +87,37 @@ func weekAndDayFinder () {
 func dateFinder() {
     var daysCount = 1
     while true {
-        let nextTripDay = Calendar.current.date(byAdding: .day, value: daysCount, to: date)!
-        weekOfMonth = calendar.component(.weekOfMonth, from: nextTripDay)
-        let tempWeekToVist = weekOfMonth
-        let tempDayToVist = today.string(from: nextTripDay).uppercased()
-        if "WK\(tempWeekToVist)" == weekToVist && tempDayToVist == dayToVist{
-        print("Date-",nextTripDay)
-        print("Day-",dayToVist)
-        print("Week-",weekToVist)
-        break
+        daysLimitCounter = daysLimitCounter + 1
+        if daysLimit != daysLimitCounter {
+            let nextTripDay = Calendar.current.date(byAdding: .day, value: daysCount, to: date)!
+            weekOfMonth = calendar.component(.weekOfMonth, from: nextTripDay)
+            let tempWeekToVist = weekOfMonth
+            let tempDayToVist = today.string(from: nextTripDay).uppercased()
+            if "WK\(tempWeekToVist)" == weekToVist && tempDayToVist == dayToVist {
+//                print("Date -",nextTripDay)
+//                print("Day -",dayToVist)
+//                print("Week -",weekToVist)
+                nextTripDate = "date: \(nextTripDay), Day: \(dayToVist), Week: \(weekToVist)"
+                break
+            } else {
+                daysCount = daysCount + 1
+            }
         } else {
-            daysCount = daysCount + 1
+            nextTripDate = "OUT OF LIMIT \(daysLimit)"
+            break
         }
     }
 }
 
-weekAndDayFinder()
-dateFinder()
+func nextVisit() {
+    if schedule != "" {
+        daySplitter()
+        makingOrder()
+        weekAndDayFinder()
+        dateFinder()
+    } else {
+        nextTripDate = "Invaild-Input"
+    }
+    print(nextTripDate)
+}
+nextVisit()
